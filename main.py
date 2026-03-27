@@ -81,7 +81,7 @@ logging.basicConfig(
 
 
 def main():
-    raise Exception("Test failure")
+    # raise Exception("Test failure")
 
     logging.info("📥 Fetching emails...")
     emails = fetch_emails("Zerodha/Allotment")
