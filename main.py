@@ -72,9 +72,18 @@ from portfolio_module.report_generator import generate_report
 from portfolio_module.ai_insights import generate_ai_insights
 from utils.email_sender import send_email
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s"
+)
+
 
 def main():
-    print("📥 Fetching emails...")
+    raise Exception("Test failure")
+
+    logging.info("📥 Fetching emails...")
     emails = fetch_emails("Zerodha/Allotment")
 
     # 🔥 Step 1: Parse trades

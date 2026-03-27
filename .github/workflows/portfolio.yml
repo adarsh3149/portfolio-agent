@@ -5,7 +5,7 @@ on:
     # 🔥 Runs at 9 PM IST (3:30 PM UTC)
     - cron: "30 15 * * *"
 
-  workflow_dispatch:  # allows manual run
+  workflow_dispatch:
 
 jobs:
   run-script:
@@ -32,3 +32,30 @@ jobs:
           USE_AI: false
         run: |
           python main.py
+
+      - name: ❌ Send Failure Alert Email
+        if: failure()
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+        run: |
+          python - <<EOF
+import smtplib
+from email.mime.text import MIMEText
+import os
+
+EMAIL = os.environ["EMAIL"]
+APP_PASSWORD = os.environ["APP_PASSWORD"]
+
+msg = MIMEText("🚨 Portfolio Agent FAILED!\n\nCheck GitHub Actions logs immediately.")
+msg["Subject"] = "🚨 Portfolio Agent Failure Alert"
+msg["From"] = EMAIL
+msg["To"] = EMAIL
+
+with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    server.starttls()
+    server.login(EMAIL, APP_PASSWORD)
+    server.send_message(msg)
+
+print("Failure alert sent!")
+EOF
