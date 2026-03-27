@@ -1,0 +1,34 @@
+name: Daily Portfolio Report
+
+on:
+  schedule:
+    # 🔥 Runs at 9 PM IST (3:30 PM UTC)
+    - cron: "30 15 * * *"
+
+  workflow_dispatch:  # allows manual run
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: ▶️ Run script
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          IMAP_SERVER: imap.gmail.com
+          USE_AI: false
+        run: |
+          python main.py
