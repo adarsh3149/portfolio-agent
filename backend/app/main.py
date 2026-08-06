@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
+from app.api.auth import router as auth_router
 from app.database.session import engine
 
 app = FastAPI(
     title="Portfolio Agent API",
-    version="1.0.0"
+    version="1.0.0",
 )
+
+app.include_router(auth_router)
 
 
 @app.get("/")
@@ -21,5 +24,5 @@ def health():
 
     return {
         "status": "healthy",
-        "database": "connected"
+        "database": "connected",
     }

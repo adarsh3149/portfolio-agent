@@ -1,22 +1,43 @@
-fastapi
-uvicorn[standard]
+# ==========================================================
+# Portfolio Agent - Backend Dependencies
+# ==========================================================
 
-sqlalchemy
-psycopg2-binary
-alembic
+# -------------------------
+# Web Framework
+# -------------------------
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
 
-pydantic
-pydantic-settings
+# -------------------------
+# Database
+# -------------------------
+sqlalchemy==2.0.42
+psycopg2-binary==2.9.10
+alembic==1.16.4
 
-python-jose[cryptography]
-passlib[bcrypt]
+# -------------------------
+# Configuration
+# -------------------------
+pydantic==2.11.7
+pydantic-settings==2.10.1
+python-dotenv==1.1.1
+email-validator==2.2.0
 
-python-multipart
+# -------------------------
+# Authentication & Security
+# -------------------------
+pwdlib[argon2]==0.2.1
+python-jose[cryptography]==3.5.0
+python-multipart==0.0.20
 
-redis
-celery
+# -------------------------
+# Background Tasks
+# -------------------------
+redis==6.4.0
+celery==5.5.3
 
-python-dotenv
-
-pytest
-httpx
+# -------------------------
+# Testing
+# -------------------------
+pytest==8.4.1
+httpx==0.28.1
