@@ -41,7 +41,7 @@ def create_access_token(subject: str) -> str:
     )
 
 
-def decode_access_token(token: str) -> dict:
+def decode_access_token(token: str) -> dict | None:
     try:
         return jwt.decode(
             token,
@@ -49,4 +49,4 @@ def decode_access_token(token: str) -> dict:
             algorithms=[settings.ALGORITHM],
         )
     except JWTError:
-        return {}
+        return None
