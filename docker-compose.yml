@@ -43,7 +43,7 @@ services:
       - ./backend:/app
 
     env_file:
-      - ./backend/.env
+      - ./backend/.env.example
 
     command: >
       uvicorn app.main:app
