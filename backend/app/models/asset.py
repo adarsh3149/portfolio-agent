@@ -81,3 +81,7 @@ class Asset(Base):
     transactions: Mapped[list["Transaction"]] = relationship(
         back_populates="asset",
     )
+
+    market_prices: Mapped[list["MarketPrice"]] = relationship(
+        back_populates="asset",
+    )

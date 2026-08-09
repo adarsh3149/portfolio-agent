@@ -5,7 +5,9 @@ from app.api import portfolio
 from app.api.auth import router as auth_router
 from app.api import transaction
 from app.api import asset
+from app.api import valuation
 from app.database.session import engine
+from app.api import market_data
 
 app = FastAPI(
     title="Portfolio Agent API",
@@ -17,7 +19,13 @@ app.include_router(
     portfolio.router,
 )
 app.include_router(transaction.router)
-app.include_router(asset.router)
+app.include_router(asset.router) 
+app.include_router(
+    market_data.router,
+)
+app.include_router(
+    valuation.router,
+)
 
 
 @app.get("/")
