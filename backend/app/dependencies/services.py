@@ -26,6 +26,11 @@ from app.services.portfolio_valuation_service import (
     PortfolioValuationService,
 )
 
+from app.services.performance_service import PerformanceService
+from app.services.portfolio_performance_service import (
+    PortfolioPerformanceService,
+)
+
 
 def get_auth_service(
     repository: UserRepository = Depends(
@@ -124,5 +129,34 @@ def get_portfolio_valuation_service(
 
     return PortfolioValuationService(
         holding_service=holding_service,
+        market_price_repository=market_price_repository,
+    )
+
+def get_performance_service(
+    transaction_repository: TransactionRepository = Depends(
+        get_transaction_repository,
+    ),
+) -> PerformanceService:
+
+    return PerformanceService(
+        repository=transaction_repository,
+    )
+
+
+def get_portfolio_performance_service(
+    holding_service: HoldingService = Depends(
+        get_holding_service,
+    ),
+    performance_service: PerformanceService = Depends(
+        get_performance_service,
+    ),
+    market_price_repository: MarketPriceRepository = Depends(
+        get_market_price_repository,
+    ),
+) -> PortfolioPerformanceService:
+
+    return PortfolioPerformanceService(
+        holding_service=holding_service,
+        performance_service=performance_service,
         market_price_repository=market_price_repository,
     )
