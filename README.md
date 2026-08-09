@@ -1,185 +1,584 @@
-# 📈 Portfolio Agent
+# 📊 Portfolio Agent
 
-A modern portfolio management platform built with **FastAPI**, **PostgreSQL**, and **Docker**.
+A backend-first portfolio management platform designed to track investments, transactions, holdings, and portfolio analytics.
 
-Portfolio Agent is designed to help investors manage and analyze their investments across multiple asset classes including mutual funds, stocks, ETFs, gold, fixed deposits, and other financial instruments.
-
-The project is being developed incrementally while following production-grade backend engineering practices and clean architecture principles.
-
-> **Current Version:** v0.2.0
-> **Status:** 🚧 Active Development
+The project is being built incrementally with a focus on clean architecture, financial precision, automated testing, and future extensibility toward live market data and AI-powered portfolio insights.
 
 ---
 
-# 🎯 Vision
+## 🚀 Current Status
 
-The goal of Portfolio Agent is to build a scalable and production-ready investment platform that enables users to:
+### Sprint 2 — Portfolio Management
 
-* Track investments across multiple asset classes
-* Record every investment transaction
-* Monitor portfolio performance
-* Calculate realized and unrealized profit/loss
-* Analyze portfolio allocation
-* Generate investment reports
-* Receive AI-powered investment insights
-
-This project is also intended to demonstrate backend engineering best practices, making it suitable as a portfolio project for software engineering interviews.
-
----
-
-# ✨ Features
-
-## ✅ Sprint 1 - Infrastructure & Authentication
-
-### Infrastructure
-
-* FastAPI
-* PostgreSQL
-* Docker & Docker Compose
-* SQLAlchemy 2.0
-* Alembic Database Migrations
-
-### Authentication & Authorization
-
-* User Registration
-* User Login
-* JWT Authentication
-* OAuth2 Authentication
-* Password Hashing using Argon2
-* Protected API Endpoints
-
-### Backend Architecture
-
-* Layered Architecture
-* Repository Pattern
-* Service Layer
-* Dependency Injection
-* Environment-based Configuration
-* Pydantic Validation
-
-### Testing
-
-* Unit Tests for Security Module
-* JWT Testing
-* Password Hashing Tests
-
----
-
-# 🏗️ System Architecture
+**Status: ✅ Complete**
 
 ```text
-                Client
-                   │
-                   ▼
-             FastAPI Router
-                   │
-                   ▼
-            Service Layer
-                   │
-                   ▼
-          Repository Layer
-                   │
-                   ▼
-            SQLAlchemy ORM
-                   │
-                   ▼
-             PostgreSQL
+Authentication              ✅
+Asset Management            ✅
+Transaction Management      ✅
+Holdings Engine             ✅
+Portfolio Summary           ✅
+API Integration Tests       ✅
+User Portfolio Isolation    ✅
+
+Test Suite: 19/19 PASSED
 ```
 
 ---
 
-# 📁 Project Structure
+# 🏗️ Architecture
+
+The application follows a layered architecture:
+
+```text
+                    ┌─────────────────────┐
+                    │      FastAPI        │
+                    │       API Layer     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Service Layer     │
+                    │ Business Logic      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Repository Layer    │
+                    │ Database Access     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    PostgreSQL       │
+                    └─────────────────────┘
+```
+
+### Project Structure
 
 ```text
 portfolio-agent/
-
+│
 ├── backend/
+│   │
 │   ├── app/
 │   │   ├── api/
+│   │   │   ├── auth.py
+│   │   │   ├── asset.py
+│   │   │   ├── portfolio.py
+│   │   │   └── transaction.py
+│   │   │
 │   │   ├── core/
+│   │   │   ├── security.py
+│   │   │   └── database_types.py
+│   │   │
 │   │   ├── database/
+│   │   │   ├── base.py
+│   │   │   └── session.py
+│   │   │
 │   │   ├── dependencies/
+│   │   │   ├── auth.py
+│   │   │   ├── database.py
+│   │   │   └── services.py
+│   │   │
+│   │   ├── enums/
+│   │   │
 │   │   ├── models/
+│   │   │   ├── user.py
+│   │   │   ├── asset.py
+│   │   │   └── transaction.py
+│   │   │
 │   │   ├── repositories/
+│   │   │   ├── asset_repository.py
+│   │   │   └── transaction_repository.py
+│   │   │
 │   │   ├── schemas/
+│   │   │   ├── auth.py
+│   │   │   ├── asset.py
+│   │   │   ├── holding.py
+│   │   │   ├── portfolio.py
+│   │   │   └── transaction.py
+│   │   │
 │   │   ├── services/
+│   │   │   ├── auth_service.py
+│   │   │   ├── asset_service.py
+│   │   │   ├── holding_accumulator.py
+│   │   │   ├── holding_service.py
+│   │   │   ├── portfolio_service.py
+│   │   │   └── transaction_service.py
+│   │   │
 │   │   └── main.py
 │   │
 │   ├── alembic/
+│   │   └── versions/
+│   │
 │   ├── tests/
-│   ├── Dockerfile
-│   ├── alembic.ini
-│   └── requirements.txt
+│   │   ├── conftest.py
+│   │   ├── test_asset_api.py
+│   │   ├── test_auth.py
+│   │   ├── test_holding_service.py
+│   │   ├── test_portfolio_isolation.py
+│   │   ├── test_portfolio_service.py
+│   │   ├── test_security.py
+│   │   └── test_transaction_api.py
+│   │
+│   ├── .env
+│   └── ...
 │
-├── docs/
-├── frontend/
-└── docker-compose.yml
+├── docker-compose.yml
+└── README.md
 ```
 
 ---
 
 # 🛠️ Tech Stack
 
-| Layer            | Technology     |
-| ---------------- | -------------- |
-| Backend          | FastAPI        |
-| Database         | PostgreSQL     |
-| ORM              | SQLAlchemy 2.0 |
-| Authentication   | JWT + OAuth2   |
-| Password Hashing | Argon2         |
-| Migrations       | Alembic        |
-| Containerization | Docker         |
-| Testing          | Pytest         |
-| Validation       | Pydantic v2    |
-
----
-
-# 🚀 Getting Started
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/<your-username>/portfolio-agent.git
-
-cd portfolio-agent
-```
-
-## Start the Application
-
-```bash
-docker compose up --build
-```
-
-The application will be available at:
-
-```text
-http://localhost:8000
-```
-
-Swagger UI:
-
-```text
-http://localhost:8000/docs
-```
+| Technology     | Purpose                     |
+| -------------- | --------------------------- |
+| Python         | Backend language            |
+| FastAPI        | REST API framework          |
+| PostgreSQL     | Primary database            |
+| SQLAlchemy     | ORM                         |
+| Alembic        | Database migrations         |
+| Pydantic       | Request/response validation |
+| JWT            | Authentication              |
+| Pytest         | Automated testing           |
+| Docker Compose | Local development           |
 
 ---
 
 # 🔐 Authentication
 
-The application uses JWT-based authentication.
+The API uses JWT-based authentication.
 
-Authentication flow:
+### Register
 
-1. Register a new user
-2. Login with email and password
-3. Receive a JWT access token
-4. Use the token to access protected endpoints
+```http
+POST /auth/register
+```
+
+Example:
+
+```json
+{
+  "name": "Adarsh",
+  "email": "adarsh@example.com",
+  "password": "your-password"
+}
+```
+
+### Login
+
+```http
+POST /auth/login
+```
+
+The login endpoint uses OAuth2 password form authentication.
+
+Example form data:
+
+```text
+username=adarsh@example.com
+password=your-password
+```
+
+Response:
+
+```json
+{
+  "access_token": "JWT_TOKEN",
+  "token_type": "bearer"
+}
+```
+
+Protected endpoints require:
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
 
 ---
 
-# 🧪 Running Tests
+# 📈 Asset Management
 
-Run the unit tests using:
+Assets represent investment instruments such as stocks, mutual funds, ETFs, gold, and other supported asset types.
+
+### Create Asset
+
+```http
+POST /assets
+```
+
+Example:
+
+```json
+{
+  "symbol": "INFY",
+  "name": "Infosys",
+  "asset_type": "STOCK",
+  "exchange": "NSE",
+  "currency": "INR",
+  "isin": "INE009A01021"
+}
+```
+
+### Get All Assets
+
+```http
+GET /assets
+```
+
+### Get Asset
+
+```http
+GET /assets/{asset_id}
+```
+
+### Asset Validation
+
+The API prevents duplicate assets and returns:
+
+```text
+409 Conflict
+```
+
+when an existing asset conflicts with the requested symbol.
+
+---
+
+# 💰 Transactions
+
+Transactions represent actual investment activity.
+
+Currently supported transaction types include:
+
+```text
+BUY
+SELL
+```
+
+### Create Transaction
+
+```http
+POST /transactions
+```
+
+Example:
+
+```json
+{
+  "asset_id": 2,
+  "transaction_type": "BUY",
+  "quantity": "100",
+  "price": "50",
+  "charges": "20.00",
+  "transaction_date": "2026-08-09",
+  "notes": "First investment"
+}
+```
+
+The transaction amount is calculated from:
+
+```text
+quantity × price
+```
+
+For example:
+
+```text
+100 × ₹50
+= ₹5,000
+```
+
+With ₹20 charges:
+
+```text
+Invested Amount
+= ₹5,000 + ₹20
+= ₹5,020
+```
+
+Financial values use `Decimal` rather than floating-point arithmetic.
+
+---
+
+# 📊 Holdings Engine
+
+The Holdings Engine derives the current holdings from the user's transaction history.
+
+For BUY transactions:
+
+```text
+Units
+    +
+Invested Amount
+    +
+Charges
+```
+
+For SELL transactions:
+
+```text
+Units
+    -
+
+Average Cost × Sold Units
+    ↓
+Invested Amount
+```
+
+The engine also prevents selling more units than currently owned.
+
+Example:
+
+```text
+Owned: 100 units
+Sell: 120 units
+
+→ ValueError
+→ Cannot sell more units than owned.
+```
+
+---
+
+# 📋 Portfolio APIs
+
+## Get Holdings
+
+```http
+GET /portfolio/holdings
+```
+
+Example response:
+
+```json
+[
+  {
+    "asset_id": 2,
+    "symbol": "INFY",
+    "asset_name": "Infosys",
+    "units": "100.00000000",
+    "average_cost": "50.20",
+    "invested_amount": "5020.00"
+  }
+]
+```
+
+---
+
+## Portfolio Summary
+
+```http
+GET /portfolio/summary
+```
+
+Example:
+
+```json
+{
+  "total_holdings": 1,
+  "total_transactions": 2,
+  "total_invested": "8030.00"
+}
+```
+
+The summary is calculated specifically for the authenticated user.
+
+For a new user with no transactions:
+
+```json
+{
+  "total_holdings": 0,
+  "total_transactions": 0,
+  "total_invested": "0.00"
+}
+```
+
+---
+
+# 🔒 User Data Isolation
+
+Portfolio information is isolated by user.
+
+For example:
+
+```text
+User A
+ └── BUY 100 INFY
+       │
+       └── Portfolio A
+             └── 100 INFY
+
+
+User B
+ └── No transactions
+       │
+       └── Portfolio B
+             └── Empty
+```
+
+User B cannot see User A's holdings or transactions.
+
+This behavior is covered by an automated integration test.
+
+---
+
+# 🧪 Testing
+
+The project uses Pytest for automated testing.
+
+Run the complete test suite:
+
+```bash
+docker compose exec backend pytest
+```
+
+Current result:
+
+```text
+19 passed
+```
+
+### Test Coverage Includes
+
+```text
+Authentication
+    ✅ JWT creation and decoding
+
+Asset APIs
+    ✅ Create asset
+    ✅ Get assets
+    ✅ Get asset by ID
+    ✅ Missing asset handling
+    ✅ Duplicate asset handling
+
+Transaction APIs
+    ✅ Create transaction
+    ✅ Unauthenticated transaction rejection
+    ✅ Unknown asset handling
+
+Holdings
+    ✅ BUY processing
+    ✅ SELL processing
+    ✅ Overselling protection
+    ✅ Holdings API
+
+Portfolio
+    ✅ Portfolio summary
+    ✅ Empty portfolio
+    ✅ Multi-user isolation
+```
+
+---
+
+# 🗄️ Database Migrations
+
+Alembic is used for database schema management.
+
+Check the current migration:
+
+```bash
+docker compose exec backend alembic current
+```
+
+View migration history:
+
+```bash
+docker compose exec backend alembic history
+```
+
+Create a migration:
+
+```bash
+docker compose exec backend alembic revision --autogenerate -m "description"
+```
+
+Apply migrations:
+
+```bash
+docker compose exec backend alembic upgrade head
+```
+
+Rollback one migration:
+
+```bash
+docker compose exec backend alembic downgrade -1
+```
+
+---
+
+# 🐳 Running Locally
+
+Start the application:
+
+```bash
+docker compose up -d
+```
+
+Check running containers:
+
+```bash
+docker compose ps
+```
+
+View backend logs:
+
+```bash
+docker compose logs backend
+```
+
+Open the FastAPI Swagger documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+Open ReDoc:
+
+```text
+http://localhost:8000/redoc
+```
+
+Health check:
+
+```http
+GET /health
+```
+
+Expected:
+
+```json
+{
+  "status": "healthy",
+  "database": "connected"
+}
+```
+
+---
+
+# 🧩 Development Workflow
+
+Typical development workflow:
+
+```text
+1. Modify model/schema/service
+          ↓
+2. Create Alembic migration
+          ↓
+3. Apply migration
+          ↓
+4. Implement/update API
+          ↓
+5. Add tests
+          ↓
+6. Run pytest
+          ↓
+7. Verify Swagger
+          ↓
+8. Commit changes
+```
+
+Run all tests before committing:
 
 ```bash
 docker compose exec backend pytest
@@ -187,78 +586,107 @@ docker compose exec backend pytest
 
 ---
 
-# 🗺️ Project Roadmap
+# 🗺️ Roadmap
 
-## ✅ Sprint 1
+## Sprint 1 — Foundation
 
-* Project Setup
-* Docker
-* PostgreSQL
-* SQLAlchemy
-* Alembic
-* User Registration
-* User Login
-* JWT Authentication
-* OAuth2 Authorization
-* Security Testing
+```text
+✅ Project setup
+✅ Docker environment
+✅ PostgreSQL
+✅ Authentication
+✅ JWT
+✅ SQLAlchemy
+✅ Alembic
+```
 
----
+## Sprint 2 — Portfolio Management
 
-## 🚧 Sprint 2
+```text
+✅ Asset management
+✅ Transaction management
+✅ Holdings engine
+✅ BUY/SELL processing
+✅ Portfolio holdings API
+✅ Portfolio summary API
+✅ Integration testing
+✅ User isolation
+```
 
-* Asset Management
-* Transaction Management
-* Holdings Calculation
-* Portfolio Summary
+## Sprint 3 — Market Data & Analytics
 
----
+Planned:
 
-## 📅 Sprint 3
+```text
+⬜ Live market prices
+⬜ Current portfolio value
+⬜ Unrealized P/L
+⬜ Realized P/L
+⬜ Asset allocation
+⬜ Historical portfolio value
+⬜ SIP analytics
+⬜ XIRR
+```
 
-* Dashboard APIs
-* Portfolio Analytics
-* Asset Allocation
-* Profit & Loss Reports
+## Future — AI Portfolio Intelligence
 
----
+Planned:
 
-## 🔮 Sprint 4
-
-* Live Market Data Integration
-* XIRR Calculations
-* Goal Planning
-* Portfolio Rebalancing
-* AI Portfolio Advisor
-
----
-
-# 🌿 Git Workflow
-
-This project follows a feature-branch development workflow.
-
-* `main` → Stable production-ready code
-* `feature/*` → Feature development
-* Semantic Versioning (`v0.x.x`)
-* Conventional Commit Messages
-
----
-
-# 🏛️ Engineering Principles
-
-The project is being developed following modern software engineering practices:
-
-* Clean Architecture
-* SOLID Principles
-* Repository Pattern
-* Service Layer
-* Dependency Injection
-* Incremental Development
-* Security First Approach
+```text
+⬜ Portfolio insights
+⬜ Investment summaries
+⬜ Risk analysis
+⬜ Anomaly detection
+⬜ Personalized portfolio explanations
+⬜ AI-powered portfolio assistant
+```
 
 ---
 
-# 📄 License
+# 🎯 Project Vision
 
-This project is currently under active development.
+Portfolio Agent is being built as more than a simple transaction tracker.
 
-A license will be added before the first public release.
+The long-term goal is to evolve from:
+
+```text
+Transaction Tracker
+        ↓
+Portfolio Manager
+        ↓
+Portfolio Analytics Platform
+        ↓
+AI-Powered Investment Assistant
+```
+
+The architecture is intentionally being built incrementally so that future market-data, analytics, and AI capabilities can be added without rewriting the core portfolio management system.
+
+---
+
+# 📌 Current Milestone
+
+```text
+Portfolio Agent
+────────────────────────────────
+
+Sprint 2 Complete
+
+19 / 19 Tests Passed
+
+Authentication       ✅
+Assets               ✅
+Transactions         ✅
+Holdings             ✅
+Portfolio Summary    ✅
+API Integration      ✅
+User Isolation       ✅
+
+Next:
+Market Data & Portfolio Analytics
+```
+
+---
+
+## License
+
+This project is currently being developed as a personal portfolio-management project.

@@ -25,3 +25,5 @@ backend/venv/
 
 # Windows
 Thumbs.db
+
+backend/.env

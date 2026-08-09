@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
+from app.api import portfolio
 from app.api.auth import router as auth_router
+from app.api import transaction
+from app.api import asset
 from app.database.session import engine
 
 app = FastAPI(
@@ -10,6 +13,11 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(
+    portfolio.router,
+)
+app.include_router(transaction.router)
+app.include_router(asset.router)
 
 
 @app.get("/")
@@ -26,3 +34,4 @@ def health():
         "status": "healthy",
         "database": "connected",
     }
+

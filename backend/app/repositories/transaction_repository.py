@@ -1,6 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import selectinload
+from sqlalchemy import func
+
 
 from app.models.transaction import Transaction
 
@@ -43,3 +45,18 @@ class TransactionRepository:
         self.db.refresh(transaction)
 
         return transaction
+
+    def count_by_user(
+            self,
+            user_id: int
+    ) -> int:
+
+        statment = (
+            select(func.count())
+            .select_from(Transaction)
+            .where(
+                Transaction.user_id == user_id
+            )
+        )
+
+        return self.db.scalar(statment) or 0
