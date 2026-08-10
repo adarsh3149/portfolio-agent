@@ -10,6 +10,16 @@ from app.dependencies.services import get_portfolio_service
 from app.schemas.portfolio import PortfolioSummary
 from app.services.portfolio_service import PortfolioService
 
+from app.dependencies.services import (
+    get_portfolio_performance_service,
+)
+from app.schemas.portfolio_performance import (
+    PortfolioPerformance,
+)
+from app.services.portfolio_performance_service import (
+    PortfolioPerformanceService,
+)
+
 router = APIRouter(
     prefix="/portfolio",
     tags=["Portfolio"],
@@ -38,5 +48,19 @@ def get_summary(
     ),
 ):
     return service.get_summary(
+        current_user.id,
+    )
+
+@router.get(
+    "/performance",
+    response_model=PortfolioPerformance,
+)
+def get_performance(
+    current_user: User = Depends(get_current_user),
+    service: PortfolioPerformanceService = Depends(
+        get_portfolio_performance_service,
+    ),
+):
+    return service.get_performance(
         current_user.id,
     )
