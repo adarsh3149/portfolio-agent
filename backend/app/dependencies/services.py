@@ -37,7 +37,13 @@ from app.services.portfolio_performance_service import (
 from app.services.portfolio_snapshot_service import (
     PortfolioSnapshotService,
 )
+from app.services.portfolio_cagr_service import (
+    PortfolioCAGRService,
+)
 
+from app.services.portfolio_xirr_service import (
+    PortfolioXIRRService,
+)
 
 def get_auth_service(
     repository: UserRepository = Depends(
@@ -188,4 +194,28 @@ def get_portfolio_snapshot_service(
     return PortfolioSnapshotService(
         performance_service=performance_service,
         repository=repository,
+    )
+
+def get_portfolio_cagr_service(
+    portfolio_snapshot_repository: PortfolioSnapshotRepository = Depends(
+        get_portfolio_snapshot_repository,
+    ),
+) -> PortfolioCAGRService:
+
+    return PortfolioCAGRService(
+        repository=portfolio_snapshot_repository,
+    )
+
+def get_portfolio_xirr_service(
+    transaction_repository: TransactionRepository = Depends(
+        get_transaction_repository,
+    ),
+    portfolio_snapshot_repository: PortfolioSnapshotRepository = Depends(
+        get_portfolio_snapshot_repository,
+    ),
+) -> PortfolioXIRRService:
+
+    return PortfolioXIRRService(
+        transaction_repository=transaction_repository,
+        snapshot_repository=portfolio_snapshot_repository,
     )
