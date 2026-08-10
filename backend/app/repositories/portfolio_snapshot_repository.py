@@ -45,6 +45,8 @@ class PortfolioSnapshotRepository:
     def get_by_user(
         self,
         user_id: int,
+        start_date: date | None = None,
+        end_date: date | None = None,
     ) -> list[PortfolioSnapshot]:
 
         statement = (
@@ -56,6 +58,16 @@ class PortfolioSnapshotRepository:
                 PortfolioSnapshot.snapshot_date,
             )
         )
+
+        if start_date is not None:
+            statement = statement.where(
+                PortfolioSnapshot.snapshot_date >= start_date,
+            )
+
+        if end_date is not None:
+            statement = statement.where(
+                PortfolioSnapshot.snapshot_date <= end_date,
+            )
 
         return list(
             self.db.scalars(statement)

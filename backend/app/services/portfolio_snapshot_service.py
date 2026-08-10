@@ -84,9 +84,23 @@ class PortfolioSnapshotService:
 
     def get_history(
             self,
-            user_id:int
+            user_id:int,
+            start_date: date | None = None,
+            end_date: date | None = None,
     ) -> list[PortfolioSnapshot]:
+
+        if (
+            start_date is not None
+            and end_date is not None
+            and start_date > end_date
+        ):
+            raise ValueError(
+                "start_date cannot be greater than end_date"
+            )
+        
 
         return self.repository.get_by_user(
             user_id=user_id,
+            start_date=start_date,
+            end_date=end_date,
         )

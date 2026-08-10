@@ -247,3 +247,183 @@ def test_empty_portfolio_history_returns_empty_list(
 
     assert response.status_code == 200
     assert response.json() == []
+
+def test_portfolio_history_with_start_date(
+    client: TestClient,
+    db_session: Session,
+):
+    headers = create_authenticated_user(
+        client,
+        "history_start_date@example.com",
+    )
+
+    user_id = get_user_id(
+        client,
+        headers,
+    )
+
+    create_snapshot(
+        db_session,
+        user_id,
+        date(2026, 8, 8),
+        Decimal("10000.00"),
+        Decimal("11000.00"),
+        Decimal("200.00"),
+        Decimal("800.00"),
+        Decimal("1000.00"),
+    )
+
+    create_snapshot(
+        db_session,
+        user_id,
+        date(2026, 8, 9),
+        Decimal("10000.00"),
+        Decimal("11500.00"),
+        Decimal("300.00"),
+        Decimal("1200.00"),
+        Decimal("1500.00"),
+    )
+
+    response = client.get(
+        "/portfolio/history",
+        params={
+            "start_date": "2026-08-09",
+        },
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["snapshot_date"] == "2026-08-09"
+
+
+def test_portfolio_history_with_end_date(
+    client: TestClient,
+    db_session: Session,
+):
+    headers = create_authenticated_user(
+        client,
+        "history_end_date@example.com",
+    )
+
+    user_id = get_user_id(
+        client,
+        headers,
+    )
+
+    create_snapshot(
+        db_session,
+        user_id,
+        date(2026, 8, 8),
+        Decimal("10000.00"),
+        Decimal("11000.00"),
+        Decimal("200.00"),
+        Decimal("800.00"),
+        Decimal("1000.00"),
+    )
+
+    create_snapshot(
+        db_session,
+        user_id,
+        date(2026, 8, 9),
+        Decimal("10000.00"),
+        Decimal("11500.00"),
+        Decimal("300.00"),
+        Decimal("1200.00"),
+        Decimal("1500.00"),
+    )
+
+    response = client.get(
+        "/portfolio/history",
+        params={
+            "end_date": "2026-08-08",
+        },
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["snapshot_date"] == "2026-08-08"
+
+
+def test_portfolio_history_with_date_range(
+    client: TestClient,
+    db_session: Session,
+):
+    headers = create_authenticated_user(
+        client,
+        "history_range@example.com",
+    )
+
+    user_id = get_user_id(
+        client,
+        headers,
+    )
+
+    for snapshot_date in [
+        date(2026, 8, 7),
+        date(2026, 8, 8),
+        date(2026, 8, 9),
+        date(2026, 8, 10),
+    ]:
+        create_snapshot(
+            db_session,
+            user_id,
+            snapshot_date,
+            Decimal("10000.00"),
+            Decimal("11000.00"),
+            Decimal("200.00"),
+            Decimal("800.00"),
+            Decimal("1000.00"),
+        )
+
+    response = client.get(
+        "/portfolio/history",
+        params={
+            "start_date": "2026-08-08",
+            "end_date": "2026-08-09",
+        },
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert [
+        item["snapshot_date"]
+        for item in data
+    ] == [
+        "2026-08-08",
+        "2026-08-09",
+    ]
+
+
+def test_portfolio_history_rejects_invalid_date_range(
+    client: TestClient,
+):
+    headers = create_authenticated_user(
+        client,
+        "history_invalid_range@example.com",
+    )
+
+    response = client.get(
+        "/portfolio/history",
+        params={
+            "start_date": "2026-08-10",
+            "end_date": "2026-08-01",
+        },
+        headers=headers,
+    )
+
+    assert response.status_code == 400
+
+    assert response.json()["detail"] == (
+        "start_date cannot be greater than end_date"
+    )

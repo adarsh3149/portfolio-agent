@@ -229,3 +229,141 @@ def test_duplicate_snapshot_for_same_user_and_date_is_rejected(
         db_session.commit()
 
     db_session.rollback()
+
+def test_get_snapshots_by_user_with_start_date(
+    db_session,
+):
+    user = create_user(
+        db_session,
+        "snapshot_start_date@example.com",
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 8),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 9),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 10),
+    )
+
+    repository = PortfolioSnapshotRepository(
+        db_session
+    )
+
+    snapshots = repository.get_by_user(
+        user_id=user.id,
+        start_date=date(2026, 8, 9),
+    )
+
+    assert [
+        snapshot.snapshot_date
+        for snapshot in snapshots
+    ] == [
+        date(2026, 8, 9),
+        date(2026, 8, 10),
+    ]
+
+
+def test_get_snapshots_by_user_with_end_date(
+    db_session,
+):
+    user = create_user(
+        db_session,
+        "snapshot_end_date@example.com",
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 8),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 9),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 10),
+    )
+
+    repository = PortfolioSnapshotRepository(
+        db_session
+    )
+
+    snapshots = repository.get_by_user(
+        user_id=user.id,
+        end_date=date(2026, 8, 9),
+    )
+
+    assert [
+        snapshot.snapshot_date
+        for snapshot in snapshots
+    ] == [
+        date(2026, 8, 8),
+        date(2026, 8, 9),
+    ]
+
+
+def test_get_snapshots_by_user_with_date_range(
+    db_session,
+):
+    user = create_user(
+        db_session,
+        "snapshot_date_range@example.com",
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 7),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 8),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 9),
+    )
+
+    create_snapshot(
+        db_session,
+        user.id,
+        date(2026, 8, 10),
+    )
+
+    repository = PortfolioSnapshotRepository(
+        db_session
+    )
+
+    snapshots = repository.get_by_user(
+        user_id=user.id,
+        start_date=date(2026, 8, 8),
+        end_date=date(2026, 8, 9),
+    )
+
+    assert [
+        snapshot.snapshot_date
+        for snapshot in snapshots
+    ] == [
+        date(2026, 8, 8),
+        date(2026, 8, 9),
+    ]
