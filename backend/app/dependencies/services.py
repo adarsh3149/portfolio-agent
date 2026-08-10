@@ -6,11 +6,15 @@ from app.dependencies.repositories import (
     get_market_price_repository,
     get_transaction_repository,
     get_user_repository,
+    get_portfolio_snapshot_repository,
 )
 from app.repositories.asset_repository import AssetRepository
 from app.repositories.market_price_repository import MarketPriceRepository
 from app.repositories.transaction_repository import TransactionRepository
 from app.repositories.user_repository import UserRepository
+from app.repositories.portfolio_snapshot_repository import (
+    PortfolioSnapshotRepository,
+)
 from app.services.asset_service import AssetService
 from app.services.auth_service import AuthService
 from app.services.fake_market_data_provider import (
@@ -29,6 +33,9 @@ from app.services.portfolio_valuation_service import (
 from app.services.performance_service import PerformanceService
 from app.services.portfolio_performance_service import (
     PortfolioPerformanceService,
+)
+from app.services.portfolio_snapshot_service import (
+    PortfolioSnapshotService,
 )
 
 
@@ -159,4 +166,26 @@ def get_portfolio_performance_service(
         holding_service=holding_service,
         performance_service=performance_service,
         market_price_repository=market_price_repository,
+    )
+
+def get_portfolio_snapshot_repository(
+    repository: PortfolioSnapshotRepository = Depends(
+        get_portfolio_snapshot_repository,
+    ),
+) -> PortfolioSnapshotRepository:
+
+    return repository
+
+def get_portfolio_snapshot_service(
+    performance_service: PortfolioPerformanceService = Depends(
+        get_portfolio_performance_service,
+    ),
+    repository: PortfolioSnapshotRepository = Depends(
+        get_portfolio_snapshot_repository,
+    ),
+) -> PortfolioSnapshotService:
+
+    return PortfolioSnapshotService(
+        performance_service=performance_service,
+        repository=repository,
     )

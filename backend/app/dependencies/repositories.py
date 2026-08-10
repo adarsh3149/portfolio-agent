@@ -6,6 +6,9 @@ from app.repositories.asset_repository import AssetRepository
 from app.repositories.market_price_repository import MarketPriceRepository
 from app.repositories.transaction_repository import TransactionRepository
 from app.repositories.user_repository import UserRepository
+from app.repositories.portfolio_snapshot_repository import (
+    PortfolioSnapshotRepository,
+)
 
 
 def get_user_repository(
@@ -30,3 +33,9 @@ def get_market_price_repository(
     db: Session = Depends(get_db),
 ) -> MarketPriceRepository:
     return MarketPriceRepository(db)
+
+def get_portfolio_snapshot_repository(
+    db: Session = Depends(get_db),
+) -> PortfolioSnapshotRepository:
+
+    return PortfolioSnapshotRepository(db)

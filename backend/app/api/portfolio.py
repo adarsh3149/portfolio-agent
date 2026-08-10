@@ -20,6 +20,18 @@ from app.services.portfolio_performance_service import (
     PortfolioPerformanceService,
 )
 
+from app.dependencies.services import (
+    get_portfolio_snapshot_service,
+)
+
+from app.schemas.portfolio_history import (
+    PortfolioHistory,
+)
+
+from app.services.portfolio_snapshot_service import (
+    PortfolioSnapshotService,
+)
+
 router = APIRouter(
     prefix="/portfolio",
     tags=["Portfolio"],
@@ -62,5 +74,19 @@ def get_performance(
     ),
 ):
     return service.get_performance(
+        current_user.id,
+    )
+
+@router.get(
+    "/history",
+    response_model=list[PortfolioHistory],
+)
+def get_history(
+    current_user: User = Depends(get_current_user),
+    service: PortfolioSnapshotService = Depends(
+        get_portfolio_snapshot_service,
+    ),
+):
+    return service.get_history(
         current_user.id,
     )

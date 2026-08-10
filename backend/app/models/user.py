@@ -39,3 +39,7 @@ class User(Base):
     transactions: Mapped[list["Transaction"]] = relationship(
         back_populates="user",
     )
+
+    portfolio_snapshots: Mapped[list["PortfolioSnapshot"]] = relationship(
+        back_populates="user"
+    )
