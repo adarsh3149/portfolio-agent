@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import HTTPException
+from datetime import date
 
 from app.dependencies.auth import get_current_user
 from app.dependencies.services import get_holding_service
@@ -18,6 +20,18 @@ from app.schemas.portfolio_performance import (
 )
 from app.services.portfolio_performance_service import (
     PortfolioPerformanceService,
+)
+
+from app.dependencies.services import (
+    get_portfolio_snapshot_service,
+)
+
+from app.schemas.portfolio_history import (
+    PortfolioHistory,
+)
+
+from app.services.portfolio_snapshot_service import (
+    PortfolioSnapshotService,
 )
 
 router = APIRouter(
@@ -64,3 +78,27 @@ def get_performance(
     return service.get_performance(
         current_user.id,
     )
+
+@router.get(
+    "/history",
+    response_model=list[PortfolioHistory],
+)
+def get_history(
+    start_date: date | None = None,
+    end_date: date | None = None,
+    current_user: User = Depends(get_current_user),
+    service: PortfolioSnapshotService = Depends(
+        get_portfolio_snapshot_service,
+    ),
+):
+    try:
+        return service.get_history(
+            user_id=current_user.id,
+            start_date=start_date,
+            end_date=end_date,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
