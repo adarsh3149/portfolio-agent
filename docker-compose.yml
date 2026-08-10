@@ -51,5 +51,26 @@ services:
       --port 8000
       --reload
 
+  scheduler:
+    build:
+      context: ./backend
+
+    container_name: portfolio-scheduler
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    volumes:
+      - ./backend:/app
+
+    env_file:
+      - ./backend/.env
+
+    command: >
+      python -m app.scheduler.main
+
 volumes:
   postgres_data:
