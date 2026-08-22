@@ -45,6 +45,26 @@ from app.services.portfolio_xirr_service import (
     PortfolioXIRRService,
 )
 
+from app.services.asset_allocation_service import (
+    AssetAllocationService,
+)
+
+from app.dependencies.database import get_db
+from sqlalchemy.orm import Session
+
+from app.repositories.cdsl_transaction_event_repository import (
+    CDSLTransactionEventRepository,
+)
+from app.services.cdsl.daily_email_parser import (
+    CDSLDailyEmailParser,
+)
+from app.services.cdsl.import_service import (
+    CDSLImportService,
+)
+from app.services.cdsl.transaction_processor import (
+    CDSLTransactionProcessor,
+)
+
 def get_auth_service(
     repository: UserRepository = Depends(
         get_user_repository,
@@ -218,4 +238,45 @@ def get_portfolio_xirr_service(
     return PortfolioXIRRService(
         transaction_repository=transaction_repository,
         snapshot_repository=portfolio_snapshot_repository,
+    )
+
+def get_asset_allocation_service(
+    holding_service: HoldingService = Depends(
+        get_holding_service,
+    ),
+    market_price_repository: MarketPriceRepository = Depends(
+        get_market_price_repository,
+    ),
+) -> AssetAllocationService:
+
+    return AssetAllocationService(
+        holding_service=holding_service,
+        market_price_repository=market_price_repository,
+    )
+
+def get_cdsl_import_service(
+    db: Session = Depends(get_db),
+) -> CDSLImportService:
+
+    repository = CDSLTransactionEventRepository(
+        db,
+    )
+
+    parser = CDSLDailyEmailParser()
+
+    return CDSLImportService(
+        parser=parser,
+        repository=repository,
+    )
+
+
+def get_cdsl_transaction_processor(
+    db: Session = Depends(get_db),
+) -> CDSLTransactionProcessor:
+
+    return CDSLTransactionProcessor(
+        event_repository=CDSLTransactionEventRepository(db),
+        asset_repository=AssetRepository(db),
+        market_price_repository=MarketPriceRepository(db),
+        transaction_repository=TransactionRepository(db),
     )
